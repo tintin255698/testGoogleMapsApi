@@ -50,11 +50,10 @@
             var directionsDisplay = new google.maps.DirectionsRenderer;
             directionsDisplay.setMap(map);
  
-            $("#carte_valide").on("click",function() {
-                    var start = ("#carte_depart").value;
-                    var end = ("#carte_arrive").value;
+            $("#carte_itineraire").on("click",function() {
+                    var start = $("#carte_depart").val();
+                    var end = $("#carte_arrive").val();
                     drawPath(directionsService, directionsDisplay,start,end);
-              
             });
             
       	}
@@ -63,7 +62,7 @@
               origin: start,
               destination: end,
               optimizeWaypoints: true,
-              travelMode: $("input[name='travel_mode']:checked"). val()
+              travelMode: 'WALKING'
             }, function(response, status) {
                 if (status === 'OK') {
                 directionsDisplay.setDirections(response);
