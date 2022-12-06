@@ -1,0 +1,81 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Hello CarteController!{% endblock %}
+
+{% block body %}
+
+    <style>
+        #map-layer {
+            max-width: 900px;
+            min-height: 550px;
+        }
+        h1{
+            text-align: center;
+        }
+    </style>
+
+    <h1>Calcul de l'itinéraire</h1>
+
+    {{ form(formCarte) }}
+
+   <h2>Géolocalisation départ</h2>
+    <ul>
+        <li>Lat: {{ latDepart }}</li>
+        <li>Long: {{ longDepart }}</li>
+    </ul>
+
+    <h2>Géolocalisation Arrivée</h2>
+    <ul>
+        <li>Lat: {{ latArrivee }}</li>
+        <li>Long: {{ longArrivee }}</li>
+    </ul>
+
+    <h2>Distance entre les 2 points</h2>
+    <p>Distance : {{ distance }} km</p>
+
+    <div id="map-layer"></div>
+
+<script src="https://code.jquery.com/jquery-3.2.1.js"></script>
+
+  <script>
+      	var map;
+      	var waypoints;
+      	function initMap() {
+        	  	var mapLayer = document.getElementById("map-layer"); 
+            	var centerCoordinates = new google.maps.LatLng(47.2358795, 6.0305287);
+        		var defaultOptions = { center: centerCoordinates, zoom: 8 }
+        		map = new google.maps.Map(mapLayer, defaultOptions);
+	
+            var directionsService = new google.maps.DirectionsService;
+            var directionsDisplay = new google.maps.DirectionsRenderer;
+            directionsDisplay.setMap(map);
+ 
+            $("#carte_valide").on("click",function() {
+                    var start = ("#carte_depart").value;
+                    var end = ("#carte_arrive").value;
+                    drawPath(directionsService, directionsDisplay,start,end);
+              
+            });
+            
+      	}
+        	function drawPath(directionsService, directionsDisplay,start,end) {
+            directionsService.route({
+              origin: start,
+              destination: end,
+              optimizeWaypoints: true,
+              travelMode: $("input[name='travel_mode']:checked"). val()
+            }, function(response, status) {
+                if (status === 'OK') {
+                directionsDisplay.setDirections(response);
+                } else {
+                window.alert('Problem in showing direction due to ' + status);
+                }
+            });
+      }
+	</script>
+    <script async defer
+            src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBCzcA3JEzGGGf_qChPWP9-yRbF5X6sFSA&callback=initMap">
+    </script>
+
+
+{% endblock %}
